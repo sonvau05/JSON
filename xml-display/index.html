@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Details</h1>
+    <table id="employeeTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Title</th>
+                <th>Division</th>
+                <th>Building</th>
+                <th>Room</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "employees.xml", true);
+            xhr.responseType = "document";
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const xml = xhr.responseXML;
+                    const employees = xml.getElementsByTagName("employee");
+                    const tableBody = document.querySelector("#employeeTable tbody");
+
+                    for (let employee of employees) {
+                        const id = employee.getAttribute("id");
+                        const firstname = employee.getElementsByTagName("firstname")[0].textContent;
+                        const lastname = employee.getElementsByTagName("lastname")[0].textContent;
+                        const title = employee.getElementsByTagName("title")[0].textContent;
+                        const division = employee.getElementsByTagName("division")[0].textContent;
+                        const building = employee.getElementsByTagName("building")[0].textContent;
+                        const room = employee.getElementsByTagName("room")[0].textContent;
+                        const des = employee.getElementsByTagName("des")[0].textContent.trim();
+
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${id}</td>
+                            <td>${firstname}</td>
+                            <td>${lastname}</td>
+                            <td>${title}</td>
+                            <td>${division}</td>
+                            <td>${building}</td>
+                            <td>${room}</td>
+                            <td>${des}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                } else {
+                    console.error("Failed to load XML file:", xhr.status, xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function() {
+                console.error("Request error occurred");
+            };
+
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
